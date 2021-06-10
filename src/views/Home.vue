@@ -11,7 +11,9 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import Input from "../components/Input";
+const shortid = require("shortid");
 
 export default {
   name: "Home",
@@ -28,12 +30,15 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["setTareas"]),
     procesarFormulario() {
-      console.log(this.tarea);
       if (this.tarea.nombre.trim() === "") {
         console.log("Campo vacío");
+        alert("complete el campo nombre");
         return;
       }
+      this.tarea.id = shortid.generate();
+      this.setTareas(this.tarea);
       this.tarea = {
         id: "",
         nombre: "",
