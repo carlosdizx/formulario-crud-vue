@@ -14,13 +14,17 @@ export default createStore({
   mutations: {
     set(state, payload) {
       this.state.tareas.push(payload);
-      console.log("---------TAREAS---------");
-      console.log(this.state.tareas);
+    },
+    del(state, payload) {
+      state.tareas = state.tareas.filter((value) => value.id !== payload)
     }
   },
   actions: {
     setTareas({ commit }, tarea) {
       commit("set", tarea);
+    },
+    deleteTareas({ commit }, id) {
+      commit("del", id);
     }
   },
   modules: {}
