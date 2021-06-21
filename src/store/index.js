@@ -1,65 +1,71 @@
-import { createStore } from 'vuex'
-import router from '../router'
+import { createStore } from "vuex";
+import router from "../router";
 
 export default createStore({
   state: {
     tareas: [],
     tarea: {
-      id: '',
-      nombre: '',
+      id: "",
+      nombre: "",
       categorias: [],
-      estado: '',
+      estado: "",
       numero: 0
     }
   },
   mutations: {
     cargar(state, payload) {
-      state.tareas = payload
+      state.tareas = payload;
     },
     set(state, payload) {
-      state.tareas.push(payload)
-      localStorage.setItem('tareas', JSON.stringify(state.tareas))
+      state.tareas.push(payload);
     },
     eliminar(state, payload) {
-      state.tareas = state.tareas.filter(item => item.id !== payload)
-      localStorage.setItem('tareas', JSON.stringify(state.tareas))
+      state.tareas = state.tareas.filter(item => item.id !== payload);
     },
     tarea(state, payload) {
       if (!state.tareas.find(item => item.id === payload)) {
-        router.push('/')
-        return
+        router.push("/");
+        return;
       }
-      state.tarea = state.tareas.find(item => item.id === payload)
+      state.tarea = state.tareas.find(item => item.id === payload);
     },
     update(state, payload) {
-      state.tareas = state.tareas.map(item => item.id === payload.id ? payload : item)
-      router.push('/')
-      localStorage.setItem('tareas', JSON.stringify(state.tareas))
+      state.tareas = state.tareas.map(item =>
+        item.id === payload.id ? payload : item
+      );
+      router.push("/");
     }
   },
   actions: {
-    cargarLocalStorage({ commit }) {
-      if (localStorage.getItem('tareas')) {
-        const tareas = JSON.parse(localStorage.getItem('tareas'))
-        commit('cargar', tareas)
-        return
+    cargarLocalStorage({ commit }) {},
+    async setTareas({ commit }, tarea) {
+      try {
+        const response = await fetch(
+          `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(tarea)
+          }
+        );
+        const dataDB = await response.json();
+        console.log(dataDB);
+      } catch (error) {
+        console.log(error);
       }
-
-      localStorage.setItem('tareas', JSON.stringify([]))
-    },
-    setTareas({ commit }, tarea) {
-      commit('set', tarea)
+      commit("set", tarea);
     },
     deleteTareas({ commit }, id) {
-      commit('eliminar', id)
+      commit("eliminar", id);
     },
     setTarea({ commit }, id) {
-      commit('tarea', id)
+      commit("tarea", id);
     },
     updateTarea({ commit }, tarea) {
-      commit('update', tarea)
+      commit("update", tarea);
     }
   },
-  modules: {
-  }
-})
+  modules: {}
+});
