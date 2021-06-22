@@ -43,7 +43,7 @@ export default createStore({
         const response = await fetch(
           `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`,
           {
-            method: "POST",
+            method: "PUT",
             headers: {
               "Content-Type": "application/json"
             },
