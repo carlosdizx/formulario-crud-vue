@@ -78,7 +78,24 @@ export default createStore({
     setTarea({ commit }, id) {
       commit("tarea", id);
     },
-    updateTarea({ commit }, tarea) {
+    async updateTarea({ commit }, tarea) {
+      try {
+        const response = await (
+          await fetch(
+            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(tarea)
+            }
+          )
+        ).json();
+        console.log(response);
+      } catch (e) {
+        console.log(e);
+      }
       commit("update", tarea);
     }
   },
