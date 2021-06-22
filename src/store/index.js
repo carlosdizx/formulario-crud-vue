@@ -74,17 +74,12 @@ export default createStore({
     },
     async deleteTareas({ commit }, id) {
       try {
-        const response = await (
-          await fetch(
-            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${id}.json`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json"
-              }
-            }
-          )
-        ).json();
+        await fetch(
+          `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${id}.json`,
+          {
+            method: "DELETE"
+          }
+        );
       } catch (e) {
         console.log(e);
       }
