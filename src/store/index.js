@@ -10,9 +10,13 @@ export default createStore({
       categorias: [],
       estado: "",
       numero: 0
-    }
+    },
+    user: null
   },
   mutations: {
+    setUser(state, payload) {
+      state.user = payload;
+    },
     cargar(state, payload) {
       state.tareas = payload;
     },
@@ -37,6 +41,9 @@ export default createStore({
     }
   },
   actions: {
+    registrarUsuario({ commit }, user) {
+      console.log(user);
+    },
     async cargarTareas({ commit }) {
       try {
         const response = await (
