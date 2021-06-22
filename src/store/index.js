@@ -41,8 +41,34 @@ export default createStore({
     }
   },
   actions: {
-    registrarUsuario({ commit }, user) {
-      console.log(user);
+    async registrarUsuario({ commit }, user) {
+      try {
+        const res = (
+          await fetch(
+            "https://identitytoolkit.googleapis.com/v1/" +
+              "accounts:signUp?key=AIzaSyDAVDt38rRKtPm-6q9S_H2v0Gq7u_V_wbY",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                email: user.email,
+                password: user.password,
+                returnSecureToken: true
+              })
+            }
+          )
+        ).json();
+        if (res.error) {
+          console.log(res.error);
+          return;
+        }
+        commit("setUser", user);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
     },
     async cargarTareas({ commit }) {
       try {
