@@ -1,5 +1,5 @@
 <template>
-  <h1>Formulario</h1>
+  <h1>Login</h1>
   <form @submit.prevent="procesarFormulario" class="my-5">
     <input
       v-model.trim="userTempalte.email"
@@ -8,19 +8,13 @@
       placeholder="Email"
     />
     <input
-      v-model.trim="userTempalte.password1"
+      v-model.trim="userTempalte.password"
       class="form-control my-2"
       type="password"
       placeholder="Contraseña"
     />
-    <input
-      class="form-control my-2"
-      type="password"
-      placeholder="Confirme contraseña"
-      v-model.trim="userTempalte.password2"
-    />
     <button class="btn btn-success" type="submit" :disabled="bloquearBoton">
-      Registrar
+      Ingresar
     </button>
   </form>
 </template>
@@ -29,36 +23,28 @@
 import { mapActions } from "vuex";
 
 export default {
-  name: "Registro",
+  name: "Ingreso",
   data: () => ({
     userTempalte: {
-      email: "carlosbiche98@gmail.com",
-      password1: "7423102ca",
-      password2: "7423102ca"
+      email: "zarlosbiche98@gmail.com",
+      password: "7423102ca"
     }
   }),
   computed: {
     bloquearBoton() {
       return (
         !this.userTempalte.email.includes("@") ||
-        this.userTempalte.password1.length < 6 ||
-        this.userTempalte.password2.length < 6 ||
-        this.userTempalte.password1 !== this.userTempalte.password2
+        this.userTempalte.password.length < 6
       );
     }
   },
   methods: {
-    ...mapActions(["registrarUsuario"]),
+    ...mapActions(["ingresoUsuario"]),
     procesarFormulario() {
-      this.registrarUsuario({
+      this.ingresoUsuario({
         email: this.userTempalte.email,
-        password: this.userTempalte.password1
+        password: this.userTempalte.password
       });
-      this.userTempalte = {
-        email: "",
-        password: "",
-        password2: ""
-      };
     }
   }
 };

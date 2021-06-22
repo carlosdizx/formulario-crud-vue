@@ -43,7 +43,7 @@ export default createStore({
   actions: {
     async registrarUsuario({ commit }, user) {
       try {
-        const res = (
+        const res = await (
           await fetch(
             "https://identitytoolkit.googleapis.com/v1/" +
               "accounts:signUp?key=AIzaSyDAVDt38rRKtPm-6q9S_H2v0Gq7u_V_wbY",
@@ -65,7 +65,35 @@ export default createStore({
           return;
         }
         commit("setUser", user);
-        console.log(res);
+        await router.push("/");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async ingresoUsuario({ commit }, user) {
+      try {
+        const res = await (
+          await fetch(
+            "https://identitytoolkit.googleapis.com/v1/" +
+              "accounts:signInWithPassword?key=AIzaSyDAVDt38rRKtPm-6q9S_H2v0Gq7u_V_wbY",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                email: user.email,
+                password: user.password,
+                returnSecureToken: true
+              })
+            }
+          )
+        ).json();
+        if (res.error) {
+          return console.log(res.error);
+        }
+        await router.push("/");
+        commit("setUser", user);
       } catch (error) {
         console.log(error);
       }
