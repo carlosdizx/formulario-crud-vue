@@ -13,10 +13,10 @@
       Navbar
     },
     methods:{
-      ...mapActions(['cargarLocalStorage'])
+      ...mapActions(['cargarTareas'])
     },
     created(){
-      this.cargarLocalStorage()
+      this.cargarTareas()
     }
   }
 </script>

@@ -37,7 +37,22 @@ export default createStore({
     }
   },
   actions: {
-    cargarLocalStorage({ commit }) {},
+    async cargarTareas({ commit }) {
+      try {
+        const response = await (
+          await fetch(
+            "https://udemy-api-arena-default-rtdb.firebaseio.com/tareas.json"
+          )
+        ).json();
+        const array = [];
+        for (const id in response) {
+          array.push(response[id]);
+        }
+        commit("cargar", array);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async setTareas({ commit }, tarea) {
       try {
         const response = await fetch(
