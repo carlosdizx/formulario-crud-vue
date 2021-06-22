@@ -92,7 +92,6 @@ export default createStore({
             }
           )
         ).json();
-        console.log(response);
       } catch (e) {
         console.log(e);
       }
