@@ -1,191 +1,162 @@
-import { createStore } from "vuex";
-import router from "../router";
+import { createStore } from 'vuex'
+import router from '../router'
 
 export default createStore({
   state: {
     tareas: [],
     tarea: {
-      id: "",
-      nombre: "",
+      id: '',
+      nombre: '',
       categorias: [],
-      estado: "",
+      estado: '',
       numero: 0
     },
     user: null
   },
   mutations: {
     setUser(state, payload) {
-      state.user = payload;
+      state.user = payload
     },
     cargar(state, payload) {
-      state.tareas = payload;
+      state.tareas = payload
     },
     set(state, payload) {
-      state.tareas.push(payload);
+      state.tareas.push(payload)
     },
     eliminar(state, payload) {
-      state.tareas = state.tareas.filter(item => item.id !== payload);
+      state.tareas = state.tareas.filter(item => item.id !== payload)
     },
     tarea(state, payload) {
       if (!state.tareas.find(item => item.id === payload)) {
-        router.push("/");
-        return;
+        router.push('/')
+        return
       }
-      state.tarea = state.tareas.find(item => item.id === payload);
+      state.tarea = state.tareas.find(item => item.id === payload)
     },
     update(state, payload) {
-      state.tareas = state.tareas.map(item =>
-        item.id === payload.id ? payload : item
-      );
-      router.push("/");
+      state.tareas = state.tareas.map(item => item.id === payload.id ? payload : item)
+      router.push('/')
     }
   },
   actions: {
-    async registrarUsuario({ commit }, user) {
+    cerrarSesion({ commit }) {
+      commit('setUser', null)
+      router.push('/ingreso')
+      localStorage.removeItem('usuario')
+    },
+    async ingresoUsuario({ commit }, usuario) {
       try {
-        const res = await (
-          await fetch(
-            "https://identitytoolkit.googleapis.com/v1/" +
-              "accounts:signUp?key=AIzaSyDAVDt38rRKtPm-6q9S_H2v0Gq7u_V_wbY",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                email: user.email,
-                password: user.password,
-                returnSecureToken: true
-              })
-            }
-          )
-        ).json();
-        if (res.error) {
-          console.log(res.error);
-          return;
+        const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBfdb-nsyLRvYhfxtlBJEYkzvbvMZJotJ8', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: usuario.email,
+            password: usuario.password,
+            returnSecureToken: true
+          })
+        })
+        const userDB = await res.json()
+        console.log('userDB', userDB)
+        if (userDB.error) {
+          return console.log(userDB.error)
         }
-        commit("setUser", res);
-        await router.push("/");
-        localStorage.setItem("usuario", JSON.stringify(res));
+        commit('setUser', userDB)
+        router.push('/')
+        localStorage.setItem('usuario', JSON.stringify(userDB))
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
-    async ingresoUsuario({ commit }, user) {
+    async registrarUsuario({ commit }, usuario) {
       try {
-        const res = await (
-          await fetch(
-            "https://identitytoolkit.googleapis.com/v1/" +
-              "accounts:signInWithPassword?key=AIzaSyDAVDt38rRKtPm-6q9S_H2v0Gq7u_V_wbY",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                email: user.email,
-                password: user.password,
-                returnSecureToken: true
-              })
-            }
-          )
-        ).json();
-        if (res.error) {
-          return console.log(res.error);
+        const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBfdb-nsyLRvYhfxtlBJEYkzvbvMZJotJ8', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: usuario.email,
+            password: usuario.password,
+            returnSecureToken: true
+          })
+        })
+        const userDB = await res.json()
+        console.log(userDB)
+        if (userDB.error) {
+          console.log(userDB.error)
+          return
         }
-        commit("setUser", res);
-        await router.push("/");
-        localStorage.setItem("usuario", JSON.stringify(res));
+        commit('setUser', userDB)
+        router.push('/')
+        localStorage.setItem('usuario', JSON.stringify(userDB))
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
-    cerrarSession({ commit }) {
-      commit("setUser", null);
-      localStorage.removeItem("usuario");
-    },
-    async cargarTareas({ commit, state }) {
-      const usuarioLocal = localStorage.getItem("usuario");
-      if (usuarioLocal) {
-        commit("setUser", JSON.parse(usuarioLocal));
+    async cargarLocalStorage({ commit, state }) {
+      if (localStorage.getItem('usuario')) {
+        commit('setUser', JSON.parse(localStorage.getItem('usuario')))
       } else {
-        return commit("setUser", null);
+        return commit('setUser', null)
       }
       try {
-        console.log(state.user);
-        const response = await (
-          await fetch(
-            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`
-          )
-        ).json();
-        const array = [];
-        for (const id in response) {
-          array.push(response[id]);
+        const res = await fetch(`https://udemy-api-eea7f.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`)
+        const dataDB = await res.json()
+        const arrayTareas = []
+        for (let id in dataDB){
+          arrayTareas.push(dataDB[id])
         }
-        commit("cargar", array);
+        commit('cargar', arrayTareas)
+
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
     async setTareas({ commit, state }, tarea) {
       try {
-        const response = await fetch(
-          `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(tarea)
-          }
-        );
-        const dataDB = await response.json();
-        console.log(dataDB);
+        const res = await fetch(`https://udemy-api-eea7f.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(tarea)
+        })
+
+        const dataDB = await res.json()
+        console.log(dataDB)
+
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-      commit("set", tarea);
+      commit('set', tarea)
     },
     async deleteTareas({ commit, state }, id) {
       try {
-        await fetch(
-          `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`,
-          {
-            method: "DELETE"
-          }
-        );
-      } catch (e) {
-        console.log(e);
+        await fetch(`https://udemy-api-eea7f.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`, {
+          method: 'DELETE',
+        })
+        commit('eliminar', id)
+      } catch (error) {
+        console.log(error)
       }
-      commit("eliminar", id);
     },
     setTarea({ commit }, id) {
-      commit("tarea", id);
+      commit('tarea', id)
     },
     async updateTarea({ commit, state }, tarea) {
       try {
-        const response = await (
-          await fetch(
-            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(tarea)
-            }
-          )
-        ).json();
-      } catch (e) {
-        console.log(e);
+        const res = await fetch(`https://udemy-api-eea7f.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+          method: 'PATCH',
+          body: JSON.stringify(tarea)
+        })
+        const dataDB = await res.json()
+        commit('update', dataDB)
+      } catch (error) {
+        console.log(error)
       }
-      commit("update", tarea);
     }
   },
   getters: {
-    userAutenticado(state) {
-      return !!state.user;
+    usuarioAutenticado(state) {
+      return !!state.user
     }
   },
-  modules: {}
-});
+  modules: {
+  }
+})

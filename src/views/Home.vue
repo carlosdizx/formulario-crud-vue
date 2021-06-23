@@ -1,65 +1,67 @@
 <template>
+
   <h1 class="my-5">Formularios con Vue.js</h1>
 
   <form @submit.prevent="procesarFormulario">
     <Input :tarea="tarea" />
   </form>
-  <hr />
+  <hr>
   <ListaTareas />
 </template>
 
 <script>
-import Input from "../components/Input";
-import ListaTareas from "../components/ListaTareas";
-import { mapActions } from "vuex";
-const shortid = require("shortid");
+
+import Input from '../components/Input'
+import ListaTareas from '../components/ListaTareas'
+import {mapActions} from 'vuex'
+const shortid = require('shortid');
 
 export default {
-  name: "Home",
+  name: 'Home',
   components: {
-    Input,
-    ListaTareas
+    Input, ListaTareas
   },
   data() {
     return {
       tarea: {
-        id: "",
-        nombre: "",
+        id: '',
+        nombre: '',
         categorias: [],
-        estado: "",
+        estado: '',
         numero: 0
       }
-    };
+    }
   },
   methods: {
-    ...mapActions(["setTareas", "cargarTareas"]),
-    procesarFormulario() {
-      console.log(this.tarea);
-      if (this.tarea.nombre.trim() === "") {
-        console.log("Campo vacío");
-        return;
+    ...mapActions(['setTareas', 'cargarLocalStorage']),
+    procesarFormulario(){
+      console.log(this.tarea)
+      if(this.tarea.nombre.trim() === ""){
+        console.log('Campo vacío')
+        return
       }
-      console.log("no está vacio");
+      console.log('no está vacio')
 
       // generar id
-      this.tarea.id = shortid.generate();
-      console.log(this.tarea.id);
-
+      this.tarea.id = shortid.generate()
+      console.log(this.tarea.id)
+      
       // envian los datos
-      this.setTareas(this.tarea);
+      this.setTareas(this.tarea)
 
       // limpiar datos
       this.tarea = {
-        id: "",
-        nombre: "",
+        id: '',
+        nombre: '',
         categorias: [],
-        estado: "",
+        estado: '',
         numero: 0
-      };
+      }
     }
   },
-  created() {
-    this.cargarTareas();
+  created(){
+    this.cargarLocalStorage()
   }
-};
+
+}
 </script>

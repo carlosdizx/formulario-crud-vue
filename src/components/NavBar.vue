@@ -1,33 +1,50 @@
 <template>
   <div class="navbar navbar-dark bg-dark">
-    <router-link to="/" class="navbar-brand">
-      Formularios
-    </router-link>
-    <div class="d-flex">
-      <router-link v-if="userAutenticado" class="btn btn-dark" to="/">
-        Tareas
+      <router-link to="/" class="navbar-brand">
+          Formularios
       </router-link>
-      <router-link  @click="cerrarSession" v-if="userAutenticado" class="btn btn-danger" to="/ingreso">
-        Cerrar sesion
-      </router-link>
-      <router-link v-if="!userAutenticado" class="btn mr-2 btn-success" to="/ingreso">
-        Iniciar sesion
-      </router-link>
-      <router-link v-if="!userAutenticado" class="btn btn-primary" to="/registro">
-        Registrar
-      </router-link>
-    </div>
+      <div class="d-flex">
+          <router-link 
+            class="btn btn-dark" 
+            to="/"
+            v-if="usuarioAutenticado"
+            >
+            Tareas
+          </router-link>
+          <router-link 
+            class="btn btn-dark" 
+            to="/ingreso"
+            v-if="!usuarioAutenticado"
+            >
+            Ingresar
+          </router-link>
+          <router-link 
+            class="btn btn-dark" 
+            to="/registro"
+            v-if="!usuarioAutenticado"
+            >
+            Registrar
+          </router-link>
+          <button
+            class="btn btn-dark"
+            v-if="usuarioAutenticado"
+            @click="cerrarSesion"
+          >
+            Cerrar Sesión
+          </button>
+      </div>
   </div>
 </template>
 
 <script>
-import { mapGetters,mapActions } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
 export default {
-  computed: {
-    ...mapGetters(["userAutenticado"])
+  computed:{
+    ...mapGetters(['usuarioAutenticado'])
   },
-  methods:{
-    ...mapActions(['cerrarSession'])
+  methods: {
+    ...mapActions(['cerrarSesion'])
   }
-};
+}
 </script>
+
