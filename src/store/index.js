@@ -103,7 +103,7 @@ export default createStore({
       console.log(state.user)
         const response = await (
           await fetch(
-            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas.json?auth=${state.user.idToken}`
+            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`
           )
         ).json();
         const array = [];
@@ -115,10 +115,10 @@ export default createStore({
         console.log(error);
       }
     },
-    async setTareas({ commit }, tarea) {
+    async setTareas({ commit, state }, tarea) {
       try {
         const response = await fetch(
-          `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`,
+          `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`,
           {
             method: "PUT",
             headers: {
@@ -134,10 +134,10 @@ export default createStore({
       }
       commit("set", tarea);
     },
-    async deleteTareas({ commit }, id) {
+    async deleteTareas({ commit, state }, id) {
       try {
         await fetch(
-          `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${id}.json`,
+          `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`,
           {
             method: "DELETE"
           }
@@ -150,11 +150,11 @@ export default createStore({
     setTarea({ commit }, id) {
       commit("tarea", id);
     },
-    async updateTarea({ commit }, tarea) {
+    async updateTarea({ commit, state }, tarea) {
       try {
         const response = await (
           await fetch(
-            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`,
+            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`,
             {
               method: "PATCH",
               headers: {
