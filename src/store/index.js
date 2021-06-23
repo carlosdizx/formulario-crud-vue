@@ -31,6 +31,18 @@ export default createStore({
           message: "Contraseña incorrecta"
         });
       }
+      if (payload === "EMAIL_EXISTS") {
+        return (state.error = {
+          tipo: "email",
+          message: "El correo ya esta registrado"
+        });
+      }
+      if (payload === "INVALID_EMAIL") {
+        return (state.error = {
+          tipo: "email",
+          message: "El correo no esta bien escrito"
+        });
+      }
     },
     setUser(state, payload) {
       state.user = payload;
@@ -104,11 +116,11 @@ export default createStore({
           }
         );
         const userDB = await res.json();
-        console.log(userDB);
         if (userDB.error) {
           console.log(userDB.error);
-          return;
+          return commit("setError", userDB.error.message);
         }
+        commit("setError", null);
         commit("setUser", userDB);
         await router.push("/");
         localStorage.setItem("usuario", JSON.stringify(userDB));
