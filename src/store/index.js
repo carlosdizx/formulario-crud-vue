@@ -46,7 +46,7 @@ export default createStore({
     },
     async ingresoUsuario({ commit }, usuario) {
       try {
-        const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBfdb-nsyLRvYhfxtlBJEYkzvbvMZJotJ8', {
+        const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDAVDt38rRKtPm-6q9S_H2v0Gq7u_V_wbY', {
           method: 'POST',
           body: JSON.stringify({
             email: usuario.email,
@@ -68,7 +68,7 @@ export default createStore({
     },
     async registrarUsuario({ commit }, usuario) {
       try {
-        const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBfdb-nsyLRvYhfxtlBJEYkzvbvMZJotJ8', {
+        const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDAVDt38rRKtPm-6q9S_H2v0Gq7u_V_wbY', {
           method: 'POST',
           body: JSON.stringify({
             email: usuario.email,
@@ -96,7 +96,7 @@ export default createStore({
         return commit('setUser', null)
       }
       try {
-        const res = await fetch(`https://udemy-api-eea7f.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`)
+        const res = await fetch(`https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`)
         const dataDB = await res.json()
         const arrayTareas = []
         for (let id in dataDB){
@@ -110,7 +110,7 @@ export default createStore({
     },
     async setTareas({ commit, state }, tarea) {
       try {
-        const res = await fetch(`https://udemy-api-eea7f.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+        const res = await fetch(`https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -128,7 +128,7 @@ export default createStore({
     },
     async deleteTareas({ commit, state }, id) {
       try {
-        await fetch(`https://udemy-api-eea7f.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`, {
+        await fetch(`https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`, {
           method: 'DELETE',
         })
         commit('eliminar', id)
@@ -141,7 +141,7 @@ export default createStore({
     },
     async updateTarea({ commit, state }, tarea) {
       try {
-        const res = await fetch(`https://udemy-api-eea7f.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+        const res = await fetch(`https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
           method: 'PATCH',
           body: JSON.stringify(tarea)
         })
