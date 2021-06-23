@@ -64,7 +64,7 @@ export default createStore({
           console.log(res.error);
           return;
         }
-        commit("setUser", user);
+        commit("setUser", res);
         await router.push("/");
       } catch (error) {
         console.log(error);
@@ -92,17 +92,18 @@ export default createStore({
         if (res.error) {
           return console.log(res.error);
         }
+        commit("setUser", res);
         await router.push("/");
-        commit("setUser", user);
       } catch (error) {
         console.log(error);
       }
     },
-    async cargarTareas({ commit }) {
-      try {
+    async cargarTareas({ commit, state }) {
+      try{
+      console.log(state.user)
         const response = await (
           await fetch(
-            "https://udemy-api-arena-default-rtdb.firebaseio.com/tareas.json"
+            `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas.json?auth=${state.user.idToken}`
           )
         ).json();
         const array = [];

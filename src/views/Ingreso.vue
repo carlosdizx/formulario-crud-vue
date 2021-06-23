@@ -26,7 +26,7 @@ export default {
   name: "Ingreso",
   data: () => ({
     userTempalte: {
-      email: "zarlosbiche98@gmail.com",
+      email: "carlosbiche98@gmail.com",
       password: "7423102ca"
     }
   }),
