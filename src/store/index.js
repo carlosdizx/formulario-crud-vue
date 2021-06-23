@@ -98,9 +98,12 @@ export default createStore({
         console.log(error);
       }
     },
+    cerrarSession({ commit }) {
+      commit("setUser", null);
+    },
     async cargarTareas({ commit, state }) {
-      try{
-      console.log(state.user)
+      try {
+        console.log(state.user);
         const response = await (
           await fetch(
             `https://udemy-api-arena-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`
@@ -172,7 +175,7 @@ export default createStore({
   },
   getters: {
     userAutenticado(state) {
-      return !!state.user
+      return !!state.user;
     }
   },
   modules: {}
