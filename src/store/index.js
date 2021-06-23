@@ -170,5 +170,10 @@ export default createStore({
       commit("update", tarea);
     }
   },
+  getters: {
+    userAutenticado(state) {
+      return !!state.user
+    }
+  },
   modules: {}
 });
