@@ -66,6 +66,7 @@ export default createStore({
         }
         commit("setUser", res);
         await router.push("/");
+        localStorage.setItem("usuario", JSON.stringify(res));
       } catch (error) {
         console.log(error);
       }
@@ -94,14 +95,22 @@ export default createStore({
         }
         commit("setUser", res);
         await router.push("/");
+        localStorage.setItem("usuario", JSON.stringify(res));
       } catch (error) {
         console.log(error);
       }
     },
     cerrarSession({ commit }) {
       commit("setUser", null);
+      localStorage.removeItem("usuario");
     },
     async cargarTareas({ commit, state }) {
+      const usuarioLocal = localStorage.getItem("usuario");
+      if (usuarioLocal) {
+        commit("setUser", JSON.parse(usuarioLocal));
+      } else {
+        return commit("setUser", null);
+      }
       try {
         console.log(state.user);
         const response = await (
