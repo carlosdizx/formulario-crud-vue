@@ -9,12 +9,14 @@
       placeholder="email"
       class="form-control my-2"
       v-model.trim="email"
+      :class="[error.tipo === 'email' ? 'is-invalid' : '']"
     />
     <input
       type="password"
       placeholder="password"
       class="form-control my-2"
       v-model.trim="pass1"
+      :class="[error.tipo === 'password' ? 'is-invalid' : '']"
     />
     <button type="submit" class="btn btn-primary" :disabled="bloquear">
       Ingresar
@@ -42,10 +44,12 @@ export default {
   },
   methods: {
     ...mapActions(["ingresoUsuario"]),
-    procesarFormulario() {
-      this.ingresoUsuario({ email: this.email, password: this.pass1 });
-      this.email = "";
-      this.pass1 = "";
+    async procesarFormulario() {
+      await this.ingresoUsuario({ email: this.email, password: this.pass1 });
+      if (this.error.tipo === null) {
+        this.email = "";
+        this.pass1 = "";
+      }
     }
   }
 };

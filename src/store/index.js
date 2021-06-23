@@ -16,10 +16,19 @@ export default createStore({
   },
   mutations: {
     setError(state, payload) {
+      if (payload === null) {
+        return (state.error = { tipo: null, message: "" });
+      }
       if (payload === "EMAIL_NOT_FOUND") {
         return (state.error = {
           tipo: "email",
           message: "Email no registrado"
+        });
+      }
+      if (payload === "INVALID_PASSWORD") {
+        return (state.error = {
+          tipo: "password",
+          message: "Contraseña incorrecta"
         });
       }
     },
@@ -70,8 +79,10 @@ export default createStore({
         );
         const userDB = await res.json();
         if (userDB.error) {
+          console.log(userDB.error);
           return commit("setError", userDB.error.message);
         }
+        commit("setError", null);
         commit("setUser", userDB);
         router.push("/");
         localStorage.setItem("usuario", JSON.stringify(userDB));
