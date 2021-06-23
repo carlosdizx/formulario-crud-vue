@@ -83,7 +83,7 @@ export default createStore({
           return
         }
         commit('setUser', userDB)
-        router.push('/')
+        await router.push('/')
         localStorage.setItem('usuario', JSON.stringify(userDB))
       } catch (error) {
         console.log(error)
